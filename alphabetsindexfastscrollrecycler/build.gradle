@@ -1,9 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-final ANDROIDX = '1.0.0'
 apply plugin: 'maven-publish' // ADD THIS
 
-group='com.github.jitpack'
 
 android {
     compileSdkVersion 33
@@ -30,49 +28,30 @@ allprojects {
         }
     }
 }
-configurations {
-    resolvedImplementation {
-        canBeResolved = true
-        canBeConsumed = false
-    }
-}
 
 dependencies {
-    resolvedImplementation 'androidx.appcompat:appcompat:1.6.1'
-    resolvedImplementation "com.google.android.material:material:1.8.0"
-    resolvedImplementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    resolvedImplementation 'androidx.core:core-ktx:1.10.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation "com.google.android.material:material:1.8.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.10.0'
 }
 
-// build a jar with source files
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
+publishing {
+    publications {
+        // 定义发布到 Maven 的信息
+        maven(MavenPublication) {
+            from components.findByName("release") ?: components.findByName("debug") ?: components.findByName("debuggable")
 
-task javadoc(type: Javadoc) {
-    failOnError = false
-    source = android.sourceSets.main.java.srcDirs
-    classpath += files(android.getBootClasspath().join(File.pathSeparator))
-    classpath += configurations.resolvedImplementation
+            // 配置 POM 文件信息
+            groupId = 'com.github.hjqiaho' // 替换为你的 groupId
+            artifactId = 'AlphabetIndex-Fast-Scroll-RecyclerView' // 替换为你的 artifactId
+            version = '2.0.003' // 替换为你的版本号
+        }
+    }
+    repositories {
+        maven {
+            // 发布到 JitPack 的 Maven 仓库 URL
+            url = uri("https://jitpack.io")
+        }
+    }
 }
-
-// build a jar with javadoc
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
-
-// uncomment to build a jar file in addition to the default aar file
-//android.libraryVariants.all { variant ->
-//    def name = variant.buildType.name
-//    def task = project.tasks.create "jar${name.capitalize()}", Jar
-//    task.dependsOn variant.javaCompile
-//    task.from variant.javaCompile.destinationDir
-//    artifacts.add('archives', task);
-//}
