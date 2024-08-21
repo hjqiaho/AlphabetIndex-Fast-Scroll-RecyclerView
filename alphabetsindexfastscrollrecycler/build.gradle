@@ -18,13 +18,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    publishing {
+        singleVariant("release")
+    }
 }
-
-allprojects {
-    repositories {
-        mavenCentral()
-        maven {
-            url "https://maven.google.com"
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release         // 表示发布 release（jitpack 都不会使用到）
+                groupId = 'com.github.hjqiaho' // 这个是依赖库的组 id
+                artifactId = 'AlphabetIndex-Fast-Scroll-RecyclerView'       // 依赖库的名称（jitpack 都不会使用到）
+                version ="2.0.004"                //当前版本依赖库版本号，这个jitpack不会使用到，只是我们开发者自己查看
+            }
         }
     }
 }
@@ -36,22 +42,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.10.0'
 }
 
-publishing {
-    publications {
-        // 定义发布到 Maven 的信息
-        maven(MavenPublication) {
-            from components.findByName("release") ?: components.findByName("debug") ?: components.findByName("debuggable")
-
-            // 配置 POM 文件信息
-            groupId = 'com.github.hjqiaho' // 替换为你的 groupId
-            artifactId = 'AlphabetIndex-Fast-Scroll-RecyclerView' // 替换为你的 artifactId
-            version = '2.0.003' // 替换为你的版本号
-        }
-    }
-    repositories {
-        maven {
-            // 发布到 JitPack 的 Maven 仓库 URL
-            url = uri("https://jitpack.io")
-        }
-    }
+task generateSourcesJar(type: Jar){
+    from android.sourceSets.main.java.srcDirs
+    classifier 'sources'
 }
