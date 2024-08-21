@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 final ANDROIDX = '1.0.0'
-//apply plugin: 'com.github.dcendents.android-maven' // ADD THIS
+apply plugin: 'maven-publish' // ADD THIS
 
 group='com.github.jitpack'
 
