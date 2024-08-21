@@ -30,12 +30,18 @@ allprojects {
         }
     }
 }
+configurations {
+    resolvedImplementation {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+}
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation "com.google.android.material:material:1.8.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.10.0'
+    resolvedImplementation 'androidx.appcompat:appcompat:1.6.1'
+    resolvedImplementation "com.google.android.material:material:1.8.0"
+    resolvedImplementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    resolvedImplementation 'androidx.core:core-ktx:1.10.0'
 }
 
 // build a jar with source files
@@ -45,10 +51,10 @@ task sourcesJar(type: Jar) {
 }
 
 task javadoc(type: Javadoc) {
-    failOnError  false
-    source = android.sourceSets.main.java.sourceFiles
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    classpath += configurations.implementation
+    failOnError = false
+    source = android.sourceSets.main.java.srcDirs
+    classpath += files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.resolvedImplementation
 }
 
 // build a jar with javadoc
