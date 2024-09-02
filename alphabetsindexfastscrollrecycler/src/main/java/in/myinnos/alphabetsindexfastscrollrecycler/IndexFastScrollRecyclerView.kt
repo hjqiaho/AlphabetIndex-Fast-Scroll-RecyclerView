@@ -247,22 +247,26 @@ import androidx.recyclerview.widget.RecyclerView
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(ev: MotionEvent): Boolean {
-        if (mEnabled) {
-            // Intercept ListView's touch event
-            if (mScroller != null && mScroller!!.onTouchEvent(ev)) return true
-            if (mGestureDetector == null) {
-                mGestureDetector = GestureDetector(context, object : SimpleOnGestureListener() {
-                    override fun onFling(
-                        e1: MotionEvent, e2: MotionEvent,
-                        velocityX: Float, velocityY: Float
-                    ): Boolean {
-                        return super.onFling(e1, e2, velocityX, velocityY)
-                    }
-                })
-            }
-            mGestureDetector?.onTouchEvent(ev)
-        }
-        return super.onTouchEvent(ev)
+       try {
+           if (mEnabled) {
+               // Intercept ListView's touch event
+               if (mScroller != null && mScroller!!.onTouchEvent(ev)) return true
+               if (mGestureDetector == null) {
+                   mGestureDetector = GestureDetector(context, object : SimpleOnGestureListener() {
+                       override fun onFling(
+                           e1: MotionEvent, e2: MotionEvent,
+                           velocityX: Float, velocityY: Float
+                       ): Boolean {
+                           return super.onFling(e1, e2, velocityX, velocityY)
+                       }
+                   })
+               }
+               mGestureDetector?.onTouchEvent(ev)
+           }
+           return super.onTouchEvent(ev)
+       }catch (th:Throwable){
+           return true
+       }
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
